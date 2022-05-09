@@ -53,24 +53,28 @@ import {
  */
  const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'gm_program-keypair.json');
  
- const NAME_FOR_GM=''
+ const NAME_FOR_GM='Bailey';
  
+ let COUNT_FOR_GM=0;
  /**
  * Borsh class and schema definition for greeting accounts
  */
  
  class GmAccount {
     name = "";
-    constructor(fields: {name: string} | undefined = undefined) {
+    count = 0;
+    constructor(fields: {name: string, count: number} | undefined = undefined) {
       if (fields) {
         this.name = fields.name;
+        this.count = fields.count;
       }
     }
     static schema = new Map([[GmAccount,
         {
             kind: 'struct',
             fields: [
-                ['name', 'string']]
+                ['name', 'string'],
+                ['count','u32']]
         }]]);
  }
  
@@ -80,7 +84,7 @@ import {
  */
  const GREETING_SIZE = borsh.serialize(
     GmAccount.schema,
-    new GmAccount({ name: NAME_FOR_GM }))
+    new GmAccount({ name: NAME_FOR_GM, count: COUNT_FOR_GM }))
  .length;
  
  /**
@@ -204,7 +208,8 @@ import {
     //first we serialize the name data
  
     let gm = new GmAccount({
-        name: NAME_FOR_GM
+        name: NAME_FOR_GM,
+        count: COUNT_FOR_GM
     })
  
  
@@ -240,6 +245,9 @@ import {
     console.log(
         greetedPubkey.toBase58(),
         'Good Morning was said to',
-        greeting.name
+        greeting.name,
+        greeting.count,
+        'times.'
     );
+
  }

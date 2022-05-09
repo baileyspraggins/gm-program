@@ -12,6 +12,7 @@ use solana_program::{
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct GreetingAccount {
     pub name: String,
+    pub count: u32,
 }
 
 // Declare abnd export eh program's entrypoint
@@ -38,10 +39,14 @@ pub fn process_instruction(
     }
 
     // Deserialzie the input data and store in the greeting account struct
-    let input_data = GreetingAccount::try_from_slice(&input).unwrap();
+    let mut input_data = GreetingAccount::try_from_slice(&input).unwrap();
 
     // Say GM in the program output
     msg!("Good Morning! {}", input_data.name);
+
+    input_data.count += 1;
+
+    msg!("You have been greeted {} times", input_data.count);
 
     // Serialize the name and store it in the passed account
     input_data.serialize(&mut &mut account.try_borrow_mut_data()?[..])?;
